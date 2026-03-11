@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>hell</h1>
+<input type="file" id="json-input" accept=".json">
+<div style="display: none;" id="output"></div>
+<button class="add-data">Загрузить</button>
+
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.9"
+        integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+        crossorigin="anonymous"></script>
+<script>
+
+$(document).ready(function() {
+    $('#json-input').on('change', function(event) {
+        const file = event.target.files[0];
+        if (file && file.type === "application/json") {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileContent = e.target.result;
+                try {
+                    const jsonObject = JSON.parse(fileContent);
+                    const new_data = JSON.stringify(jsonObject);
+                    $.each(jsonObject, function(key, value) {
+                        if (`$(value.name)`.length < 50 && `$(value.name)` != "" && `$(value.date)`.substring(0, 16).replace('T', ' ').length==16 || `$(value.date)` != ""){
+                            console.log(`Пользователь: ${value.name}, ID: ${value.date}`);
+                            $('#output').text(new_data);
+                        } else {
+                            alert('Error');
+                        }
+                    });
+                } catch (error) {
+                    $('#output').text("Error parsing JSON file: " + error.message);
+                    console.error("Error parsing JSON:", error);
+                }
+            };
+            reader.readAsText(file);
+        } else {
+            $('#output').text("Please select a valid JSON file.");
+            console.error("Invalid file type selected.");
+        }
+    });
+});
+
+$(document).on('click', '.add-data', function(e){
+    e.preventDefault();
+    $.ajax({
+        type: 'POST',
+        url: '{% url "mainapp:add-data" %}',
+        data: {
+            data_json: $('#output').text(),
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            action: 'post'
+        },
+        success: function(response){
+            console.log(response)
+        },
+        error: function(error, status){
+            console.log(error)
+        }
+    })
+});
+</script>

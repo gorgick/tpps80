@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.min.css">
+
+</head>
+<body>
+<table class="display responsive nowrap" width="100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>TimeStamp</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for data in data_for_table%}
+    <tr>
+        <td>{{ data.name }}</td>
+        <td>{{ data.data|date:"d F Y j:i" }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.9"
+        integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+        crossorigin="anonymous"></script>
+<script>
+
+</script>
